@@ -5,66 +5,55 @@ import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import java.util.Map;
+import java.util.Set;
 
 
 @RestController
 public class EmailController {
 
     @Autowired
-    EmailService emailService;
+    private EmailService emailService;
 
-   /* @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/resources/templates").setViewName("index");
-    }*/
-
-  /*  @RequestMapping(value = "/", method = RequestMethod.GET)*/
-  @GetMapping(value="/"/*, method=RequestMethod.GET*/)
+    @GetMapping(value = "/")
     public ModelAndView home(KeycloakPrincipal<RefreshableKeycloakSecurityContext> principal) {
-      /*index*/
-       ModelAndView modelAndView = new ModelAndView("index");
-      //  modelAndView.setViewName();
-   //   Map<String, String> model = new HashMap<>();
-     // model.put("name", "Alexey");
-  //    new ModelAndView("index", model);
-//      AccessToken token = principal.getKeycloakSecurityContext().getToken();
 
-     /* String id = token.getId();
-      String firstName = token.getGivenName();
-      String lastName = token.getFamilyName();
-      */
-      return /*"index"*//*"index"*/ modelAndView;
+        ModelAndView modelAndView = new ModelAndView("index" /*"external"*/);
+
+        AccessToken token = principal.getKeycloakSecurityContext().getToken();
+
+        String idToken = token.getId();
+        String firstName = token.getGivenName();
+        String lastName = token.getFamilyName();
+        String bellOneUserId = token.getSubject();
+        String login = token.getPreferredUsername();
+        String email = token.getEmail();
+        Set realmRoles = token.getRealmAccess().getRoles();
+        Map clientRoles = token.getResourceAccess();
+        long tokenTime = token.getAuthTime();
+        long tokenExpireTime = token.getExpiration();/*?*/
+
+
+        return modelAndView;
     }
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
-    public ModelAndView sendEmail(@RequestParam String recipient,  @RequestParam String subject, @RequestParam String message) {
+    public ModelAndView sendEmail(@RequestParam String recipient, @RequestParam String subject, @RequestParam String message) {
         ModelAndView modelAndView = new ModelAndView();
 
-      boolean isSend =  emailService.sendMail(recipient, subject, message);
+        boolean isSend = emailService.sendMail(recipient, subject, message);
 
-if(isSend) {
-    modelAndView.setViewName("success");
-}
-else {
-    modelAndView.setViewName("errors");
-}
-
+        if (isSend) {
+            modelAndView.setViewName("success");
+        } else {
+            modelAndView.setViewName("errors");
+        }
 
 
-
-        //имя представления, куда нужно будет перейти
-        //  modelAndView.setViewName("secondPage");
-
-        //записываем в атрибут userJSP (используется на странице *.jsp объект user
-        // modelAndView.addObject("email", email);
-
-        return modelAndView; //после уйдем на представление, указанное чуть выше, если оно будет найдено.
+        return modelAndView;
     }
 
     @GetMapping(value = "/login")
@@ -77,18 +66,9 @@ else {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("index");
-       /* modelAndView.addObject("sity", sity);
-        modelAndView.setViewName("weather");*/
 
-int a = 0;
 
-        //имя представления, куда нужно будет перейти
-        //  modelAndView.setViewName("secondPage");
-
-        //записываем в атрибут userJSP (используется на странице *.jsp объект user
-        // modelAndView.addObject("email", email);
-
-        return modelAndView; /*"index"*//*;//после уйдем на представление, указанное чуть выше, если оно будет найдено.*/
+        return modelAndView;
     }
 
 
