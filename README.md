@@ -1,1 +1,1 @@
-# keycloak + spring boot
+# keycloak + spring boot + spring mail
