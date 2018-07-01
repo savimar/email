@@ -1,1 +1,1 @@
-# Keycloak + Spring boot + Spring mail +  Thymeleaf,
+# Keycloak + Spring boot + Spring mail +  Thymeleaf
